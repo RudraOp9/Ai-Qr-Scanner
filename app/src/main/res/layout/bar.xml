@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginBottom="5dp"
+    android:padding="13dp"
+    android:elevation="-500dp"
+    android:background="@drawable/backgroundhome2"
+    android:gravity="center_vertical"
+    android:id="@+id/toolbarHome">
+
+    <ImageView
+        android:layout_marginStart="15dp"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:src="@drawable/qrcode80by80"
+
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="18sp"
+        android:layout_marginStart="12dp"
+        android:text="AI Qr Scanner"
+        />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
