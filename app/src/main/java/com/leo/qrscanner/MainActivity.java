@@ -5,28 +5,25 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
+
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.Rect;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
+
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
@@ -38,10 +35,9 @@ import com.google.mlkit.vision.common.InputImage;
 import com.leo.qrscanner.workers.checkModule;
 
 import java.io.IOException;
-import java.net.URI;
-import java.util.List;
+
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
+
 
 //made by leo.
 
@@ -87,31 +83,23 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        new BarcodeScannerOptions.Builder().enableAllPotentialBarcodes().build();
 
-        BarcodeScannerOptions options2 = new BarcodeScannerOptions.Builder().enableAllPotentialBarcodes().build();
 
+        cameraScan.setOnClickListener(v -> {
+    new GmsBarcodeScannerOptions.Builder()
+                    .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().build();
 
-        cameraScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GmsBarcodeScannerOptions options = new GmsBarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().build();
-                scanner = GmsBarcodeScanning.getClient(MainActivity.this);
-                startScan();
-            }
+            scanner = GmsBarcodeScanning.getClient(MainActivity.this);
+            startScan();
         });
 
-        galleryScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            //imagePicker();
-                pickMedia.launch(new PickVisualMediaRequest.Builder()
-                        .setMediaType(ActivityResultContracts
-                                .PickVisualMedia.ImageOnly
-                                .INSTANCE).build());
-
-
-            }
+        galleryScan.setOnClickListener(v -> {
+        //imagePicker();
+            pickMedia.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts
+                            .PickVisualMedia.ImageOnly
+                            .INSTANCE).build());
         });
 
 
@@ -162,11 +150,7 @@ public class MainActivity extends AppCompatActivity {
         power.apply();
     }
 
-    private void imagePicker(){
 
-
-
-    }
     private void analyzeImage(Uri uri) {
 
         InputImage image = null;
@@ -177,16 +161,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Task<List<Barcode>> result = scanner2.process(image)
-                .addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
-                    @Override
-                    public void onSuccess(List<Barcode> barcodes) {
+        if (image != null) {
+         scanner2.process(image)
+                    .addOnSuccessListener(barcodes -> {
                         // Task completed successfully
                         // ...
                         for (Barcode barcode: barcodes) {
-                            Rect bounds = barcode.getBoundingBox();
+                          /*  Rect bounds = barcode.getBoundingBox();
                             Point[] corners = barcode.getCornerPoints();
-
+*/
                             String rawValue = barcode.getRawValue();
                             textView.setVisibility(View.VISIBLE);
                             textView.setText(rawValue);
@@ -217,10 +200,18 @@ public class MainActivity extends AppCompatActivity {
                                 case Barcode.TYPE_CONTACT_INFO:
                                     text = "**Contact Information:**\n";
                                     Barcode.ContactInfo contactInfo = barcode.getContactInfo();
-                                    text += "Name: " + contactInfo.getName() + "\n";
-                                    text += "Email: " + contactInfo.getEmails() + "\n";
-                                    text += "Phone: " + contactInfo.getPhones() + "\n";
-                                    text += "Address: " + contactInfo.getAddresses();
+                                    if (contactInfo != null) {
+                                        text += "Name: " + contactInfo.getName() + "\n";
+                                    }
+                                    if (contactInfo != null) {
+                                        text += "Email: " + contactInfo.getEmails() + "\n";
+                                    }
+                                    if (contactInfo != null) {
+                                        text += "Phone: " + contactInfo.getPhones() + "\n";
+                                    }
+                                    if (contactInfo != null) {
+                                        text += "Address: " + contactInfo.getAddresses();
+                                    }
                                     btnText = "Add Contact";
                                     showData(text,btnText);
                                     break;
@@ -235,8 +226,12 @@ public class MainActivity extends AppCompatActivity {
                                 case Barcode.TYPE_GEO:
                                     text = "**Geo Point:**\n";
                                     Barcode.GeoPoint geoPoint = barcode.getGeoPoint();
-                                    text += "Latitude: " + geoPoint.getLat() + "\n";
-                                    text += "Longitude: " + geoPoint.getLng();
+                                    if (geoPoint != null) {
+                                        text += "Latitude: " + geoPoint.getLat() + "\n";
+                                    }
+                                    if (geoPoint != null) {
+                                        text += "Longitude: " + geoPoint.getLng();
+                                    }
                                     btnText = "Open in Maps";
                                     showData(text,btnText);
                                     break;
@@ -245,11 +240,21 @@ public class MainActivity extends AppCompatActivity {
                                 case Barcode.TYPE_DRIVER_LICENSE:
                                     text = "**Driver License:**\n";
                                     Barcode.DriverLicense driverLicense = barcode.getDriverLicense();
-                                    text += "Name: " + driverLicense.getFirstName() + " " + driverLicense.getMiddleName()  +" " + driverLicense.getMiddleName() +"\n";
-                                    text += "Address: " + driverLicense.getAddressStreet() +" " + driverLicense.getAddressCity() +" " + driverLicense.getAddressState() +" " + driverLicense.getAddressZip() + "\n";
-                                    text += "License Number: " + driverLicense.getLicenseNumber() + "\n";
-                                    text += "Issued Date: " + driverLicense.getIssueDate() + "\n";
-                                    text += "Expiration Date: " + driverLicense.getExpiryDate();
+                                    if (driverLicense != null) {
+                                        text += "Name: " + driverLicense.getFirstName() + " " + driverLicense.getMiddleName()  +" " + driverLicense.getMiddleName() +"\n";
+                                    }
+                                    if (driverLicense != null) {
+                                        text += "Address: " + driverLicense.getAddressStreet() +" " + driverLicense.getAddressCity() +" " + driverLicense.getAddressState() +" " + driverLicense.getAddressZip() + "\n";
+                                    }
+                                    if (driverLicense != null) {
+                                        text += "License Number: " + driverLicense.getLicenseNumber() + "\n";
+                                    }
+                                    if (driverLicense != null) {
+                                        text += "Issued Date: " + driverLicense.getIssueDate() + "\n";
+                                    }
+                                    if (driverLicense != null) {
+                                        text += "Expiration Date: " + driverLicense.getExpiryDate();
+                                    }
                                     btnText = "Rate 5 star";
                                     showData(text,btnText);
                                     break;
@@ -257,8 +262,12 @@ public class MainActivity extends AppCompatActivity {
                                 case Barcode.TYPE_SMS:
                                     text = "**SMS Message:**\n";
                                     Barcode.Sms sms = barcode.getSms();
-                                    text += "Message: " + sms.getMessage() + "\n";
-                                    text += "Phone Number: " + sms.getPhoneNumber();
+                                    if (sms != null) {
+                                        text += "Message: " + sms.getMessage() + "\n";
+                                    }
+                                    if (sms != null) {
+                                        text += "Phone Number: " + sms.getPhoneNumber();
+                                    }
                                     btnText = "Call this number";
                                     showData(text,btnText);
                                     break;
@@ -294,16 +303,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Task failed with an exception
-                        // ...
-                    }
-                });
-
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Task failed with an exception
+                            // ...
+                        }
+                    });
+        }
 
 
     } // on create ends

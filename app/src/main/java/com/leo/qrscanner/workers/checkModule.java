@@ -1,6 +1,5 @@
 package com.leo.qrscanner.workers;
 
-import static com.google.mlkit.vision.codescanner.GmsBarcodeScanning.getClient;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -17,7 +16,6 @@ public class checkModule {
     public void checkModuleinstall(Context context){
 
         ModuleInstallClient moduleInstallClient = ModuleInstall.getClient(context);
-
         OptionalModuleApi optionalModuleApi =  GmsBarcodeScanning.getClient(context);
 
         moduleInstallClient
@@ -40,11 +38,13 @@ public class checkModule {
                                                 response2 -> {
                                                     if (response2.areModulesAlreadyInstalled()) {
                                                         // Modules are already installed when the request is sent.
+                                                        Toast.makeText(context, "installed", Toast.LENGTH_SHORT).show();
                                                     }
                                                 })
                                         .addOnFailureListener(
                                                 e -> {
                                                     // Handle failure...
+                                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 });
                             }
 
