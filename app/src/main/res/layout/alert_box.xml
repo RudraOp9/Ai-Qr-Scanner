@@ -15,8 +15,20 @@
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
         app:indicatorColor="#8294EA"
+
         android:id="@+id/progressBar"
         />
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        style="@style/Widget.AppCompat.ProgressBar"
+        app:indicatorColor="#8294EA"
+        android:id="@+id/loadingBar"
+        />
+
 
     <TextView
         android:id="@+id/alertText"

@@ -1,8 +1,5 @@
 package com.leo.qrscanner.workers;
 
-
-
-
 import static com.leo.qrscanner.R.string.*;
 
 import android.content.Context;
@@ -46,9 +43,8 @@ public class checkModule {
                 .areModulesAvailable(optionalModuleApi)
                 .addOnSuccessListener(
                         response -> {
-                            if (response.areModulesAvailable()) {
+                            if (!response.areModulesAvailable()) {
                                 // Modules are present on the device...
-                            } else {
                                 alertDialog.show();
                                 // Modules are not present on the device...
 
