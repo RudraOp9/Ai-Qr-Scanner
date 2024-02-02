@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Qr Scanner</string>
+    <string name="pending">Pending...</string>
+    <string name="downloading">Downloading...</string>
+    <string name="installing">Installing...</string>
+    <string name="canceled">Canceled...</string>
+    <string name="failed_check_your_connection">Failed check your connection...</string>
+    <string name="completed">Completed...</string>
+    <string name="download_paused">Download Paused...</string>
+    <string name="working">Working...</string>
 </resources>
