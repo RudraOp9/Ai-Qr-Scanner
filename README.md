@@ -3,7 +3,7 @@
 "Scans almost every type of qr , bar codes"
 
 
-
+[Check out pre release version of ai qr scanner](https://github.com/RudraOp9/Ai-Qr-Scanner/releases/tag/alpha-release)
 
 
 
