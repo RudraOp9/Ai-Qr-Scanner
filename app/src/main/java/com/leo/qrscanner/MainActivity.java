@@ -242,9 +242,10 @@ public class MainActivity extends AppCompatActivity {
                 showData(text, btnText, TYPE_WIFI);
                 break;
 
+                //TODO
             case Barcode.TYPE_URL:
                 text = "**URL:**\n";
-                text += "Link: " + Objects.requireNonNull(barcode.getUrl()).getUrl();
+                text += "Link: " + Objects.requireNonNull(barcode.getUrl());
                 btnText = "Open in Browser";
                 showData(text, btnText, TYPE_URL);
                 Log.d("1", "success");
@@ -259,6 +260,10 @@ public class MainActivity extends AppCompatActivity {
                 text += "Email: " + contactInfo.getEmails() + "\n";
                 text += "Phone: " + contactInfo.getPhones() + "\n";
                 text += "Address: " + contactInfo.getAddresses();
+                text += "Organization: " + contactInfo.getOrganization();
+                text += "Title: " + contactInfo.getTitle();
+                text += "Urls: " + contactInfo.getUrls();
+
 
                 btnText = "Add Contact";
                 showData(text, btnText, TYPE_CONTACT_INFO);
@@ -268,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
                 text = "**Calendar Event:**\n";
                 Barcode.CalendarEvent calEve = barcode.getCalendarEvent();
 
+                assert calEve != null;
                 text += "Start time : " + calEve.getStart() + "\n";
                 text += "End Time: " + calEve.getEnd() + "\n";
                 text += "Location : " + calEve.getLocation() + "\n";
