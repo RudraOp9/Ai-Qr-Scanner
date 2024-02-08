@@ -14,37 +14,27 @@ import static com.leo.qrscanner.workers.dataType.TYPE_UNKNOWN;
 import static com.leo.qrscanner.workers.dataType.TYPE_URL;
 import static com.leo.qrscanner.workers.dataType.TYPE_WIFI;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
-import com.google.mlkit.vision.barcode.common.internal.BarcodeSource;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
@@ -52,7 +42,6 @@ import com.google.mlkit.vision.common.InputImage;
 import com.leo.qrscanner.workers.checkModule;
 
 import java.io.IOException;
-
 import java.util.Objects;
 
 
@@ -70,29 +59,21 @@ public class MainActivity extends AppCompatActivity {
     String rawValue = "";
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 
-        checkModule.checkModuleinstall(this );
-
-
-
-
-
-
-
+        checkModule.checkModuleinstall(this);
 
 
         cameraScan = findViewById(R.id.scanCamera);
-        galleryScan =  findViewById(R.id.scanGallery);
+        galleryScan = findViewById(R.id.scanGallery);
         textView = findViewById(R.id.textView);
 
         pickMedia =
-                registerForActivityResult(new ActivityResultContracts.PickVisualMedia(),  uri  -> {
+                registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                     // Callback is invoked after the user selects a media item or closes the
                     // photo picker.
 
@@ -106,12 +87,11 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-
         new BarcodeScannerOptions.Builder().enableAllPotentialBarcodes().build();
 
 
         cameraScan.setOnClickListener(v -> {
-    new GmsBarcodeScannerOptions.Builder()
+            new GmsBarcodeScannerOptions.Builder()
                     .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().build();
 
             scanner = GmsBarcodeScanning.getClient(MainActivity.this);
@@ -119,16 +99,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         galleryScan.setOnClickListener(v -> {
-        //imagePicker();
+            //imagePicker();
             pickMedia.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts
                             .PickVisualMedia.ImageOnly
                             .INSTANCE).build());
         });
-
-
-
-
 
 
     } // on create ends here
@@ -155,12 +131,10 @@ public class MainActivity extends AppCompatActivity {
                         })
                 .addOnFailureListener(
                         e -> {
-                            Log.d("onfailure" ,e.toString());
+                            Log.d("onfailure", e.toString());
                             // Task failed with an exception
                         });
     }
-
-
 
 
     private void analyzeImage(Uri uri) {
@@ -174,23 +148,22 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (image != null) {
-         scanner2.process(image)
+            scanner2.process(image)
                     .addOnSuccessListener(barcodes -> {
                         // Task completed successfully
                         // ...
-                        if (barcodes.isEmpty()){
+                        if (barcodes.isEmpty()) {
                             Toast.makeText(this, "no barcodes found", Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
                             for (Barcode barcode : barcodes) {
                           /*  Rect bounds = barcode.getBoundingBox();
                             Point[] corners = barcode.getCornerPoints();
                             */
-                                rawValue  += barcode.getRawValue()+"\n \n";
+                                rawValue += barcode.getRawValue() + "\n \n";
                                 textView.setText(rawValue);
                                 checkType(barcode);
-                             }
+                            }
                         }
-
 
 
                     })
@@ -212,32 +185,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
-
 
 
     }
 
-    public void copy (View v){
-        String text =  textView.getText().toString().trim();
+    public void copy(View v) {
+        String text = textView.getText().toString().trim();
         ClipboardManager clipboard = (ClipboardManager) MainActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Copied Text", text);
         clipboard.setPrimaryClip(clip);
     }
 
-    public void showData(String text2 , String buttonText2,int dataType){
-        Intent i = new Intent(MainActivity.this , showData.class);
+    public void showData(String text2, String buttonText2, int dataType) {
+        Intent i = new Intent(MainActivity.this, showData.class);
         i.putExtra("text", text2);
         i.putExtra("btnText", buttonText2);
-        i.putExtra("type",dataType);
+        i.putExtra("type", dataType);
         startActivity(i);
 
     }
 
-    private void checkType(Barcode barcode){
+    private void checkType(Barcode barcode) {
 
-        if (barcode == null){
+        if (barcode == null) {
             return;
         }
         String text = "";
@@ -247,19 +219,19 @@ public class MainActivity extends AppCompatActivity {
                 text = "**E-Mail Information:**\n";
                 Barcode.Email email = barcode.getEmail();
                 assert email != null;
-                text += email.getType() + "\n";
-                text += email.getAddress() + "\n";
-                text += email.getSubject() + "\n";
-                text += email.getBody() + "\n";
+                text += "Type: " + email.getType() + "\n";
+                text += "Address: " + email.getAddress() + "\n";
+                text += "Subject: " + email.getSubject() + "\n";
+                text += "Body: " + email.getBody() + "\n";
                 break;
 
 
-
             case TYPE_PHONE:
-                text= "**Phone Number :**\n";
+                text = "**Phone Number :**\n";
                 Barcode.Phone phone = barcode.getPhone();
-                text+= "" + phone.getNumber() + "\n";
-                text+= "" + phone.getType() + "\n";
+                assert phone != null;
+                text += "Number: " + phone.getNumber() + "\n";
+                text += "Type: " + phone.getType() + "\n";
                 break;
             case Barcode.TYPE_WIFI:
                 text = "**Wi-Fi Information:**\n";
@@ -267,14 +239,14 @@ public class MainActivity extends AppCompatActivity {
                 text += "Password: " + barcode.getWifi().getPassword() + "\n";
                 text += "Encryption Type: " + barcode.getWifi().getEncryptionType();
                 btnText = " Add WI-FI";
-                showData(text, btnText,TYPE_WIFI);
+                showData(text, btnText, TYPE_WIFI);
                 break;
 
             case Barcode.TYPE_URL:
                 text = "**URL:**\n";
-                text +=  "" +Objects.requireNonNull(barcode.getUrl()).getUrl();
+                text += "Link: " + Objects.requireNonNull(barcode.getUrl()).getUrl();
                 btnText = "Open in Browser";
-                showData(text, btnText,TYPE_URL);
+                showData(text, btnText, TYPE_URL);
                 Log.d("1", "success");
                 break;
 
@@ -289,17 +261,26 @@ public class MainActivity extends AppCompatActivity {
                 text += "Address: " + contactInfo.getAddresses();
 
                 btnText = "Add Contact";
-                showData(text, btnText,TYPE_CONTACT_INFO);
+                showData(text, btnText, TYPE_CONTACT_INFO);
                 break;
 
-            case Barcode.TYPE_CALENDAR_EVENT:
+            case TYPE_CALENDAR_EVENT:
                 text = "**Calendar Event:**\n";
-                text += barcode.getRawValue();
+                Barcode.CalendarEvent calEve = barcode.getCalendarEvent();
+
+                text += "Start time : " + calEve.getStart() + "\n";
+                text += "End Time: " + calEve.getEnd() + "\n";
+                text += "Location : " + calEve.getLocation() + "\n";
+                text += "Status : " + calEve.getStatus() + "\n";
+                text += "Description: " + calEve.getDescription() + "\n";
+                text += "Organized By: " + calEve.getOrganizer() + "\n";
+                text += "Summary : " + calEve.getSummary() + "\n";
+
                 btnText = "add to calander";
-                showData(text, btnText,TYPE_CALENDAR_EVENT);
+                showData(text, btnText, TYPE_CALENDAR_EVENT);
                 break;
 
-            case Barcode.TYPE_GEO:
+            case TYPE_GEO:
                 text = "**Geo Point:**\n";
                 Barcode.GeoPoint geoPoint = barcode.getGeoPoint();
 
@@ -308,11 +289,11 @@ public class MainActivity extends AppCompatActivity {
                 text += "Longitude: " + geoPoint.getLng();
 
                 btnText = "Open in Maps";
-                showData(text, btnText,TYPE_GEO);
+                showData(text, btnText, TYPE_GEO);
                 break;
 
 
-            case Barcode.TYPE_DRIVER_LICENSE:
+            case TYPE_DRIVER_LICENSE:
                 text = "**Driver License:**\n";
                 Barcode.DriverLicense driverLicense = barcode.getDriverLicense();
 
@@ -323,10 +304,10 @@ public class MainActivity extends AppCompatActivity {
                 text += "Issued Date: " + driverLicense.getIssueDate() + "\n";
                 text += "Expiration Date: " + driverLicense.getExpiryDate();
                 btnText = "Rate 5 star";
-                showData(text, btnText,TYPE_DRIVER_LICENSE);
+                showData(text, btnText, TYPE_DRIVER_LICENSE);
                 break;
 
-            case Barcode.TYPE_SMS:
+            case TYPE_SMS:
                 text = "**SMS Message:**\n";
                 Barcode.Sms sms = barcode.getSms();
 
@@ -335,35 +316,35 @@ public class MainActivity extends AppCompatActivity {
                 text += "Phone Number: " + sms.getPhoneNumber();
 
                 btnText = "Call this number";
-                showData(text, btnText,TYPE_SMS);
+                showData(text, btnText, TYPE_SMS);
                 break;
 
-            case Barcode.TYPE_ISBN:
+            case TYPE_ISBN:
                 text = "**ISBN:**\n";
                 text += barcode.getRawValue();
                 btnText = "Rate 5 star";
-                showData(text, btnText,TYPE_ISBN);
+                showData(text, btnText, TYPE_ISBN);
                 break;
 
-            case Barcode.TYPE_PRODUCT:
+            case TYPE_PRODUCT:
                 text = "**Product Information:**\n";
                 text += barcode.getRawValue();
                 btnText = " Search product in Browser";
-                showData(text, btnText,TYPE_PRODUCT);
+                showData(text, btnText, TYPE_PRODUCT);
                 break;
 
-            case Barcode.TYPE_TEXT:
+            case TYPE_TEXT:
                 text = "**Plain Text:**\n";
                 text += barcode.getRawValue();
                 btnText = "Rate 5 star";
-                showData(text, btnText,TYPE_TEXT);
+                showData(text, btnText, TYPE_TEXT);
                 break;
 
             default:
                 text = "**Unknown Barcode :**\n";
                 text += barcode.getRawValue();
                 btnText = "Rate 5 star";
-                showData(text, btnText,TYPE_UNKNOWN);
+                showData(text, btnText, TYPE_UNKNOWN);
         }
     }
 
