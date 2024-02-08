@@ -253,8 +253,13 @@ public class MainActivity extends AppCompatActivity {
                 text += email.getBody() + "\n";
                 break;
 
+
+
             case TYPE_PHONE:
                 text= "**Phone Number :**\n";
+                Barcode.Phone phone = barcode.getPhone();
+                text+= "" + phone.getNumber() + "\n";
+                text+= "" + phone.getType() + "\n";
                 break;
             case Barcode.TYPE_WIFI:
                 text = "**Wi-Fi Information:**\n";
@@ -267,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
 
             case Barcode.TYPE_URL:
                 text = "**URL:**\n";
-                text += Objects.requireNonNull(barcode.getUrl()).getUrl();
+                text +=  "" +Objects.requireNonNull(barcode.getUrl()).getUrl();
                 btnText = "Open in Browser";
                 showData(text, btnText,TYPE_URL);
                 Log.d("1", "success");
@@ -276,18 +281,13 @@ public class MainActivity extends AppCompatActivity {
             case Barcode.TYPE_CONTACT_INFO:
                 text = "**Contact Information:**\n";
                 Barcode.ContactInfo contactInfo = barcode.getContactInfo();
-                if (contactInfo != null) {
-                    text += "Name: " + contactInfo.getName() + "\n";
-                }
-                if (contactInfo != null) {
-                    text += "Email: " + contactInfo.getEmails() + "\n";
-                }
-                if (contactInfo != null) {
-                    text += "Phone: " + contactInfo.getPhones() + "\n";
-                }
-                if (contactInfo != null) {
-                    text += "Address: " + contactInfo.getAddresses();
-                }
+
+                assert contactInfo != null;
+                text += "Name: " + contactInfo.getName() + "\n";
+                text += "Email: " + contactInfo.getEmails() + "\n";
+                text += "Phone: " + contactInfo.getPhones() + "\n";
+                text += "Address: " + contactInfo.getAddresses();
+
                 btnText = "Add Contact";
                 showData(text, btnText,TYPE_CONTACT_INFO);
                 break;
@@ -302,12 +302,11 @@ public class MainActivity extends AppCompatActivity {
             case Barcode.TYPE_GEO:
                 text = "**Geo Point:**\n";
                 Barcode.GeoPoint geoPoint = barcode.getGeoPoint();
-                if (geoPoint != null) {
-                    text += "Latitude: " + geoPoint.getLat() + "\n";
-                }
-                if (geoPoint != null) {
-                    text += "Longitude: " + geoPoint.getLng();
-                }
+
+                assert geoPoint != null;
+                text += "Latitude: " + geoPoint.getLat() + "\n";
+                text += "Longitude: " + geoPoint.getLng();
+
                 btnText = "Open in Maps";
                 showData(text, btnText,TYPE_GEO);
                 break;
@@ -316,21 +315,13 @@ public class MainActivity extends AppCompatActivity {
             case Barcode.TYPE_DRIVER_LICENSE:
                 text = "**Driver License:**\n";
                 Barcode.DriverLicense driverLicense = barcode.getDriverLicense();
-                if (driverLicense != null) {
-                    text += "Name: " + driverLicense.getFirstName() + " " + driverLicense.getMiddleName() + " " + driverLicense.getMiddleName() + "\n";
-                }
-                if (driverLicense != null) {
-                    text += "Address: " + driverLicense.getAddressStreet() + " " + driverLicense.getAddressCity() + " " + driverLicense.getAddressState() + " " + driverLicense.getAddressZip() + "\n";
-                }
-                if (driverLicense != null) {
-                    text += "License Number: " + driverLicense.getLicenseNumber() + "\n";
-                }
-                if (driverLicense != null) {
-                    text += "Issued Date: " + driverLicense.getIssueDate() + "\n";
-                }
-                if (driverLicense != null) {
-                    text += "Expiration Date: " + driverLicense.getExpiryDate();
-                }
+
+                assert driverLicense != null;
+                text += "Name: " + driverLicense.getFirstName() + " " + driverLicense.getMiddleName() + " " + driverLicense.getMiddleName() + "\n";
+                text += "Address: " + driverLicense.getAddressStreet() + " " + driverLicense.getAddressCity() + " " + driverLicense.getAddressState() + " " + driverLicense.getAddressZip() + "\n";
+                text += "License Number: " + driverLicense.getLicenseNumber() + "\n";
+                text += "Issued Date: " + driverLicense.getIssueDate() + "\n";
+                text += "Expiration Date: " + driverLicense.getExpiryDate();
                 btnText = "Rate 5 star";
                 showData(text, btnText,TYPE_DRIVER_LICENSE);
                 break;
@@ -338,12 +329,11 @@ public class MainActivity extends AppCompatActivity {
             case Barcode.TYPE_SMS:
                 text = "**SMS Message:**\n";
                 Barcode.Sms sms = barcode.getSms();
-                if (sms != null) {
-                    text += "Message: " + sms.getMessage() + "\n";
-                }
-                if (sms != null) {
-                    text += "Phone Number: " + sms.getPhoneNumber();
-                }
+
+                assert sms != null;
+                text += "Message: " + sms.getMessage() + "\n";
+                text += "Phone Number: " + sms.getPhoneNumber();
+
                 btnText = "Call this number";
                 showData(text, btnText,TYPE_SMS);
                 break;
