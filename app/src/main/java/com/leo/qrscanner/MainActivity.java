@@ -1,5 +1,17 @@
 package com.leo.qrscanner;
 
+import static com.leo.qrscanner.workers.dataType.TYPE_CALENDAR_EVENT;
+import static com.leo.qrscanner.workers.dataType.TYPE_CONTACT_INFO;
+import static com.leo.qrscanner.workers.dataType.TYPE_DRIVER_LICENSE;
+import static com.leo.qrscanner.workers.dataType.TYPE_GEO;
+import static com.leo.qrscanner.workers.dataType.TYPE_ISBN;
+import static com.leo.qrscanner.workers.dataType.TYPE_PRODUCT;
+import static com.leo.qrscanner.workers.dataType.TYPE_SMS;
+import static com.leo.qrscanner.workers.dataType.TYPE_TEXT;
+import static com.leo.qrscanner.workers.dataType.TYPE_UNKNOWN;
+import static com.leo.qrscanner.workers.dataType.TYPE_URL;
+import static com.leo.qrscanner.workers.dataType.TYPE_WIFI;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -30,6 +42,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.barcode.common.internal.BarcodeSource;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
@@ -126,9 +139,9 @@ public class MainActivity extends AppCompatActivity {
                         barcode -> {
                             // Task completed successfully
                             String rawValue = barcode.getRawValue();
-                            int dataType = barcode.getValueType();
 
-                            storeValueToSharedpref(rawValue,dataType);
+                            checkType(barcode);
+
 
                             Toast.makeText(this, rawValue, Toast.LENGTH_SHORT).show();
 
@@ -145,19 +158,7 @@ public class MainActivity extends AppCompatActivity {
                         });
     }
 
-    private void storeValueToSharedpref(String rawValue , int valueType) {//stores the value to shared prefrences
 
-        //storing value , timestamp , value type ,
-        long tsLong = System.currentTimeMillis()/1000;
-
-        SharedPreferences sharedPreferences = getSharedPreferences("Qr data", MODE_PRIVATE);
-        SharedPreferences.Editor power = sharedPreferences.edit();
-
-        power.putString("qrValue",rawValue);
-        power.putInt("qr type",valueType);
-        power.putLong("create time",tsLong);
-        power.apply();
-    }
 
 
     private void analyzeImage(Uri uri) {
@@ -181,138 +182,11 @@ public class MainActivity extends AppCompatActivity {
                             for (Barcode barcode : barcodes) {
                           /*  Rect bounds = barcode.getBoundingBox();
                             Point[] corners = barcode.getCornerPoints();
-*/
-
-
+                            */
                                 rawValue  += barcode.getRawValue()+"\n \n";
                                 textView.setText(rawValue);
-                                Toast.makeText(MainActivity.this, rawValue, Toast.LENGTH_SHORT).show();
-
-                                int valueType = barcode.getValueType();
-                                String text = "";
-                                String btnText;
-                                // See API reference for complete list of supported types
-                                switch (valueType) {
-                                    case Barcode.TYPE_WIFI:
-                                        text = "**Wi-Fi Information:**\n";
-                                        text += "SSID: " + Objects.requireNonNull(barcode.getWifi()).getSsid() + "\n";
-                                        text += "Password: " + barcode.getWifi().getPassword() + "\n";
-                                        text += "Encryption Type: " + barcode.getWifi().getEncryptionType();
-                                        btnText = " Add WI-FI";
-                                        showData(text, btnText);
-                                        break;
-
-                                    case Barcode.TYPE_URL:
-                                        text = "**URL:**\n";
-                                        text += Objects.requireNonNull(barcode.getUrl()).getUrl();
-                                        btnText = "Open in Browser";
-                                        showData(text, btnText);
-                                        Log.d("1", "success");
-                                        break;
-
-                                    case Barcode.TYPE_CONTACT_INFO:
-                                        text = "**Contact Information:**\n";
-                                        Barcode.ContactInfo contactInfo = barcode.getContactInfo();
-                                        if (contactInfo != null) {
-                                            text += "Name: " + contactInfo.getName() + "\n";
-                                        }
-                                        if (contactInfo != null) {
-                                            text += "Email: " + contactInfo.getEmails() + "\n";
-                                        }
-                                        if (contactInfo != null) {
-                                            text += "Phone: " + contactInfo.getPhones() + "\n";
-                                        }
-                                        if (contactInfo != null) {
-                                            text += "Address: " + contactInfo.getAddresses();
-                                        }
-                                        btnText = "Add Contact";
-                                        showData(text, btnText);
-                                        break;
-
-                                    case Barcode.TYPE_CALENDAR_EVENT:
-                                        text = "**Calendar Event:**\n";
-                                        text += barcode.getRawValue();
-                                        btnText = "add to calander";
-                                        showData(text, btnText);
-                                        break;
-
-                                    case Barcode.TYPE_GEO:
-                                        text = "**Geo Point:**\n";
-                                        Barcode.GeoPoint geoPoint = barcode.getGeoPoint();
-                                        if (geoPoint != null) {
-                                            text += "Latitude: " + geoPoint.getLat() + "\n";
-                                        }
-                                        if (geoPoint != null) {
-                                            text += "Longitude: " + geoPoint.getLng();
-                                        }
-                                        btnText = "Open in Maps";
-                                        showData(text, btnText);
-                                        break;
-
-
-                                    case Barcode.TYPE_DRIVER_LICENSE:
-                                        text = "**Driver License:**\n";
-                                        Barcode.DriverLicense driverLicense = barcode.getDriverLicense();
-                                        if (driverLicense != null) {
-                                            text += "Name: " + driverLicense.getFirstName() + " " + driverLicense.getMiddleName() + " " + driverLicense.getMiddleName() + "\n";
-                                        }
-                                        if (driverLicense != null) {
-                                            text += "Address: " + driverLicense.getAddressStreet() + " " + driverLicense.getAddressCity() + " " + driverLicense.getAddressState() + " " + driverLicense.getAddressZip() + "\n";
-                                        }
-                                        if (driverLicense != null) {
-                                            text += "License Number: " + driverLicense.getLicenseNumber() + "\n";
-                                        }
-                                        if (driverLicense != null) {
-                                            text += "Issued Date: " + driverLicense.getIssueDate() + "\n";
-                                        }
-                                        if (driverLicense != null) {
-                                            text += "Expiration Date: " + driverLicense.getExpiryDate();
-                                        }
-                                        btnText = "Rate 5 star";
-                                        showData(text, btnText);
-                                        break;
-
-                                    case Barcode.TYPE_SMS:
-                                        text = "**SMS Message:**\n";
-                                        Barcode.Sms sms = barcode.getSms();
-                                        if (sms != null) {
-                                            text += "Message: " + sms.getMessage() + "\n";
-                                        }
-                                        if (sms != null) {
-                                            text += "Phone Number: " + sms.getPhoneNumber();
-                                        }
-                                        btnText = "Call this number";
-                                        showData(text, btnText);
-                                        break;
-
-                                    case Barcode.TYPE_ISBN:
-                                        text = "**ISBN:**\n";
-                                        text += barcode.getRawValue();
-                                        btnText = "Rate 5 star";
-                                        showData(text, btnText);
-                                        break;
-
-                                    case Barcode.TYPE_PRODUCT:
-                                        text = "**Product Information:**\n";
-                                        text += barcode.getRawValue();
-                                        btnText = " Search product in Browser";
-                                        showData(text, btnText);
-                                        break;
-
-                                    case Barcode.TYPE_TEXT:
-                                        text = "**Plain Text:**\n";
-                                        text += barcode.getRawValue();
-                                        btnText = "Rate 5 star";
-                                        showData(text, btnText);
-                                        break;
-
-                                    default:
-                                        text = "**Unknown Barcode Type:**\n";
-                                        text += barcode.getRawValue();
-                                        btnText = "Rate 5 star";
-                                        showData(text, btnText);
-                                }
-                            }
+                                checkType(barcode);
+                             }
                         }
 
 
@@ -350,14 +224,139 @@ public class MainActivity extends AppCompatActivity {
         clipboard.setPrimaryClip(clip);
     }
 
-    public void showData(String text2 , String buttonText2){
-
+    public void showData(String text2 , String buttonText2,int dataType){
         Intent i = new Intent(MainActivity.this , showData.class);
         i.putExtra("text", text2);
         i.putExtra("btnText", buttonText2);
+        i.putExtra("type",dataType);
         startActivity(i);
 
+    }
 
+    private void checkType(Barcode barcode){
+
+        String text = "";
+        String btnText;
+        switch (barcode.getValueType()) {
+            case Barcode.TYPE_WIFI:
+                text = "**Wi-Fi Information:**\n";
+                text += "SSID: " + Objects.requireNonNull(barcode.getWifi()).getSsid() + "\n";
+                text += "Password: " + barcode.getWifi().getPassword() + "\n";
+                text += "Encryption Type: " + barcode.getWifi().getEncryptionType();
+                btnText = " Add WI-FI";
+                showData(text, btnText,TYPE_WIFI);
+                break;
+
+            case Barcode.TYPE_URL:
+                text = "**URL:**\n";
+                text += Objects.requireNonNull(barcode.getUrl()).getUrl();
+                btnText = "Open in Browser";
+                showData(text, btnText,TYPE_URL);
+                Log.d("1", "success");
+                break;
+
+            case Barcode.TYPE_CONTACT_INFO:
+                text = "**Contact Information:**\n";
+                Barcode.ContactInfo contactInfo = barcode.getContactInfo();
+                if (contactInfo != null) {
+                    text += "Name: " + contactInfo.getName() + "\n";
+                }
+                if (contactInfo != null) {
+                    text += "Email: " + contactInfo.getEmails() + "\n";
+                }
+                if (contactInfo != null) {
+                    text += "Phone: " + contactInfo.getPhones() + "\n";
+                }
+                if (contactInfo != null) {
+                    text += "Address: " + contactInfo.getAddresses();
+                }
+                btnText = "Add Contact";
+                showData(text, btnText,TYPE_CONTACT_INFO);
+                break;
+
+            case Barcode.TYPE_CALENDAR_EVENT:
+                text = "**Calendar Event:**\n";
+                text += barcode.getRawValue();
+                btnText = "add to calander";
+                showData(text, btnText,TYPE_CALENDAR_EVENT);
+                break;
+
+            case Barcode.TYPE_GEO:
+                text = "**Geo Point:**\n";
+                Barcode.GeoPoint geoPoint = barcode.getGeoPoint();
+                if (geoPoint != null) {
+                    text += "Latitude: " + geoPoint.getLat() + "\n";
+                }
+                if (geoPoint != null) {
+                    text += "Longitude: " + geoPoint.getLng();
+                }
+                btnText = "Open in Maps";
+                showData(text, btnText,TYPE_GEO);
+                break;
+
+
+            case Barcode.TYPE_DRIVER_LICENSE:
+                text = "**Driver License:**\n";
+                Barcode.DriverLicense driverLicense = barcode.getDriverLicense();
+                if (driverLicense != null) {
+                    text += "Name: " + driverLicense.getFirstName() + " " + driverLicense.getMiddleName() + " " + driverLicense.getMiddleName() + "\n";
+                }
+                if (driverLicense != null) {
+                    text += "Address: " + driverLicense.getAddressStreet() + " " + driverLicense.getAddressCity() + " " + driverLicense.getAddressState() + " " + driverLicense.getAddressZip() + "\n";
+                }
+                if (driverLicense != null) {
+                    text += "License Number: " + driverLicense.getLicenseNumber() + "\n";
+                }
+                if (driverLicense != null) {
+                    text += "Issued Date: " + driverLicense.getIssueDate() + "\n";
+                }
+                if (driverLicense != null) {
+                    text += "Expiration Date: " + driverLicense.getExpiryDate();
+                }
+                btnText = "Rate 5 star";
+                showData(text, btnText,TYPE_DRIVER_LICENSE);
+                break;
+
+            case Barcode.TYPE_SMS:
+                text = "**SMS Message:**\n";
+                Barcode.Sms sms = barcode.getSms();
+                if (sms != null) {
+                    text += "Message: " + sms.getMessage() + "\n";
+                }
+                if (sms != null) {
+                    text += "Phone Number: " + sms.getPhoneNumber();
+                }
+                btnText = "Call this number";
+                showData(text, btnText,TYPE_SMS);
+                break;
+
+            case Barcode.TYPE_ISBN:
+                text = "**ISBN:**\n";
+                text += barcode.getRawValue();
+                btnText = "Rate 5 star";
+                showData(text, btnText,TYPE_ISBN);
+                break;
+
+            case Barcode.TYPE_PRODUCT:
+                text = "**Product Information:**\n";
+                text += barcode.getRawValue();
+                btnText = " Search product in Browser";
+                showData(text, btnText,TYPE_PRODUCT);
+                break;
+
+            case Barcode.TYPE_TEXT:
+                text = "**Plain Text:**\n";
+                text += barcode.getRawValue();
+                btnText = "Rate 5 star";
+                showData(text, btnText,TYPE_TEXT);
+                break;
+
+            default:
+                text = "**Unknown Barcode :**\n";
+                text += barcode.getRawValue();
+                btnText = "Rate 5 star";
+                showData(text, btnText,TYPE_UNKNOWN);
+        }
     }
 
 }
