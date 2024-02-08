@@ -3,8 +3,10 @@ package com.leo.qrscanner;
 import static com.leo.qrscanner.workers.dataType.TYPE_CALENDAR_EVENT;
 import static com.leo.qrscanner.workers.dataType.TYPE_CONTACT_INFO;
 import static com.leo.qrscanner.workers.dataType.TYPE_DRIVER_LICENSE;
+import static com.leo.qrscanner.workers.dataType.TYPE_EMAIL;
 import static com.leo.qrscanner.workers.dataType.TYPE_GEO;
 import static com.leo.qrscanner.workers.dataType.TYPE_ISBN;
+import static com.leo.qrscanner.workers.dataType.TYPE_PHONE;
 import static com.leo.qrscanner.workers.dataType.TYPE_PRODUCT;
 import static com.leo.qrscanner.workers.dataType.TYPE_SMS;
 import static com.leo.qrscanner.workers.dataType.TYPE_TEXT;
@@ -235,9 +237,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkType(Barcode barcode){
 
+        if (barcode == null){
+            return;
+        }
         String text = "";
         String btnText;
         switch (barcode.getValueType()) {
+            case TYPE_EMAIL:
+                text = "**E-Mail Information:**\n";
+                Barcode.Email email = barcode.getEmail();
+                assert email != null;
+                text += email.getType() + "\n";
+                text += email.getAddress() + "\n";
+                text += email.getSubject() + "\n";
+                text += email.getBody() + "\n";
+                break;
+
+            case TYPE_PHONE:
+                text= "**Phone Number :**\n";
+                break;
             case Barcode.TYPE_WIFI:
                 text = "**Wi-Fi Information:**\n";
                 text += "SSID: " + Objects.requireNonNull(barcode.getWifi()).getSsid() + "\n";
