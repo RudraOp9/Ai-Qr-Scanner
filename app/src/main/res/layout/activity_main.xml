@@ -4,140 +4,171 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backgroundhome"
     tools:context=".MainActivity">
 
-
-    <LinearLayout
-        android:id="@+id/linearlayoutbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include layout="@layout/bar" />
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayoutbar">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="100dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="72dp"
+            android:layout_marginEnd="50dp"
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="72dp"
-                android:layout_marginEnd="50dp"
+            android:backgroundTint="#FCF7F4"
+            android:padding="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="46dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-                android:backgroundTint="#FCF7F4"
-                android:padding="10dp"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="46dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="136dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:background="#FCF7F4"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/scanme" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/scanCamera"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|end"
-                        android:background="@drawable/button"
-                        android:padding="10dp"
-                        android:text="scan using camera" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-            </androidx.cardview.widget.CardView>
-
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView2"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="50dp"
-                android:backgroundTint="#FCF7F4"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="50dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView">
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
+                <ImageView
+                    android:layout_width="136dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:background="#FCF7F4"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/scanme" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/scanCamera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_gravity="center|end"
+                    android:background="@drawable/button"
+                    android:padding="10dp"
+                    android:text="scan using camera" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.cardview.widget.CardView>
 
 
-                    <ImageView
-                        android:layout_width="136dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="start"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/scann" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="50dp"
+            android:backgroundTint="#FCF7F4"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/scanGallery"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|end"
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/button"
-                        android:padding="5dp"
-                        android:text="Scan from gallery"
-                        android:textColor="@color/black" />
-
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-            </androidx.cardview.widget.CardView>
-
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="result will be shown here"
-                android:onClick="copy"
-                android:layout_marginTop="50dp"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+                android:layout_gravity="center"
+                android:orientation="horizontal">
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="136dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="start"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/scann" />
 
-    </ScrollView>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/scanGallery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|end"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/button"
+                    android:padding="5dp"
+                    android:text="Scan from gallery"
+                    android:textColor="@color/black" />
 
 
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        </androidx.cardview.widget.CardView>
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:hint="result will be shown here"
+            android:onClick="copy"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:padding="7dp"
+            android:text="Results"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <EditText
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:drawableEnd="@drawable/baseline_copy_all_24"
+            android:fontFamily="monospace"
+            android:gravity="start"
+            android:padding="7dp"
+            android:text="https://www.leo.com \njfjfj/ \nldfdf"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="68dp"
+            android:layout_marginEnd="70dp"
+            android:background="@drawable/button"
+            android:padding="5dp"
+            android:text="Primary action button"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

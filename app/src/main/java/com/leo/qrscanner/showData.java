@@ -12,9 +12,10 @@ import static com.leo.qrscanner.workers.dataType.TYPE_TEXT;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,7 +24,7 @@ import com.leo.qrscanner.workers.ShareData;
 
 public class showData extends AppCompatActivity {
 
-    TextView textView;
+    EditText textView;
     Button button;
 
     @Override
@@ -33,30 +34,31 @@ public class showData extends AppCompatActivity {
 
         textView = findViewById(R.id.textView3);
         button = findViewById(R.id.btnPrimary);
-        ShareData sd = new ShareData();
+        // ShareData sd = new ShareData();
 
         Intent i = getIntent();
         // String text = i.getStringExtra("text");
         // String btnText = i.getStringExtra("btnText");
         //  int btnType = i.getIntExtra("type",0);
-        Bundle b = this.getIntent().getExtras();
-        if (b != null) {
-            sd = b.getParcelable("barcode");
+        Bundle b = i.getBundleExtra("key");
 
-            assert sd != null;
-            Barcode barcode = sd.getBarcode();
 
-            assert barcode != null;
-            textView.setText(barcode.getRawValue());
-            //  button.setText(btnText);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //  buttonAction(btnType);
+        ShareData sd = b.getParcelable("barcode");
+
+
+        Barcode barcode = sd.getBarcode();
+
+        Log.d("tag", barcode.getRawValue());
+        textView.setText(barcode.getRawValue());
+        //  button.setText(btnText);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //  buttonAction(btnType);
                 }
             });
 
-        }
+
     }
 
     private void buttonAction(int btnType) {
