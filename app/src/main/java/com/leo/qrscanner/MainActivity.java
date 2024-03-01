@@ -1,19 +1,5 @@
 package com.leo.qrscanner;
 
-import static com.leo.qrscanner.workers.dataType.TYPE_CALENDAR_EVENT;
-import static com.leo.qrscanner.workers.dataType.TYPE_CONTACT_INFO;
-import static com.leo.qrscanner.workers.dataType.TYPE_DRIVER_LICENSE;
-import static com.leo.qrscanner.workers.dataType.TYPE_EMAIL;
-import static com.leo.qrscanner.workers.dataType.TYPE_GEO;
-import static com.leo.qrscanner.workers.dataType.TYPE_ISBN;
-import static com.leo.qrscanner.workers.dataType.TYPE_PHONE;
-import static com.leo.qrscanner.workers.dataType.TYPE_PRODUCT;
-import static com.leo.qrscanner.workers.dataType.TYPE_SMS;
-import static com.leo.qrscanner.workers.dataType.TYPE_TEXT;
-import static com.leo.qrscanner.workers.dataType.TYPE_UNKNOWN;
-import static com.leo.qrscanner.workers.dataType.TYPE_URL;
-import static com.leo.qrscanner.workers.dataType.TYPE_WIFI;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -39,10 +25,10 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 import com.google.mlkit.vision.common.InputImage;
+import com.leo.qrscanner.workers.ShareData;
 import com.leo.qrscanner.workers.checkModule;
 
 import java.io.IOException;
-import java.util.Objects;
 
 
 //made by leo.
@@ -111,23 +97,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void startScan() { // Scans the qr codes using google play service
 
-        scanner
-                .startScan()
+        scanner.startScan()
                 .addOnSuccessListener(
                         barcode -> {
                             // Task completed successfully
                             String rawValue = barcode.getRawValue();
-
                             checkType(barcode);
-
-
                             Toast.makeText(this, rawValue, Toast.LENGTH_SHORT).show();
-
                             textView.setText(rawValue);
                         })
                 .addOnCanceledListener(
                         () -> {
-                            // Task canceled
+
                         })
                 .addOnFailureListener(
                         e -> {
@@ -214,7 +195,16 @@ public class MainActivity extends AppCompatActivity {
         }
         String text = "";
         String btnText;
-        switch (barcode.getValueType()) {
+
+        Intent i = new Intent(MainActivity.this, showData.class);
+        Bundle b = new Bundle();
+
+        ShareData sd = new ShareData(barcode);
+        b.putParcelable("key", sd);
+        i.putExtra("barcode", b);
+        startActivity(i);
+
+        /*switch (barcode.getValueType()) {
             case TYPE_EMAIL:
                 text = "**E-Mail Information:**\n";
                 Barcode.Email email = barcode.getEmail();
@@ -351,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                 text += barcode.getRawValue();
                 btnText = "Rate 5 star";
                 showData(text, btnText, TYPE_UNKNOWN);
-        }
+        }*/
     }
 
 }

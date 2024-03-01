@@ -1,7 +1,6 @@
 package com.leo.qrscanner;
 
 import static com.leo.qrscanner.workers.dataType.TYPE_CALENDAR_EVENT;
-import static com.leo.qrscanner.workers.dataType.TYPE_CONTACT_INFO;
 import static com.leo.qrscanner.workers.dataType.TYPE_DRIVER_LICENSE;
 import static com.leo.qrscanner.workers.dataType.TYPE_EMAIL;
 import static com.leo.qrscanner.workers.dataType.TYPE_GEO;
@@ -10,22 +9,17 @@ import static com.leo.qrscanner.workers.dataType.TYPE_PHONE;
 import static com.leo.qrscanner.workers.dataType.TYPE_PRODUCT;
 import static com.leo.qrscanner.workers.dataType.TYPE_SMS;
 import static com.leo.qrscanner.workers.dataType.TYPE_TEXT;
-import static com.leo.qrscanner.workers.dataType.TYPE_UNKNOWN;
-import static com.leo.qrscanner.workers.dataType.TYPE_URL;
-import static com.leo.qrscanner.workers.dataType.TYPE_WIFI;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.mlkit.vision.barcode.common.Barcode;
+import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Objects;
+import com.google.mlkit.vision.barcode.common.Barcode;
+import com.leo.qrscanner.workers.ShareData;
 
 public class showData extends AppCompatActivity {
 
@@ -39,24 +33,30 @@ public class showData extends AppCompatActivity {
 
         textView = findViewById(R.id.textView3);
         button = findViewById(R.id.btnPrimary);
-
+        ShareData sd = new ShareData();
 
         Intent i = getIntent();
-        String text = i.getStringExtra("text");
-        String btnText = i.getStringExtra("btnText");
-        int btnType = i.getIntExtra("type",0);
+        // String text = i.getStringExtra("text");
+        // String btnText = i.getStringExtra("btnText");
+        //  int btnType = i.getIntExtra("type",0);
+        Bundle b = this.getIntent().getExtras();
+        if (b != null) {
+            sd = b.getParcelable("barcode");
 
+            assert sd != null;
+            Barcode barcode = sd.getBarcode();
 
-        textView.setText(text);
-        button.setText(btnText);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                buttonAction(btnType);
-            }
-        });
+            assert barcode != null;
+            textView.setText(barcode.getRawValue());
+            //  button.setText(btnText);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //  buttonAction(btnType);
+                }
+            });
 
-
+        }
     }
 
     private void buttonAction(int btnType) {
