@@ -25,7 +25,6 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 import com.google.mlkit.vision.common.InputImage;
-import com.leo.qrscanner.workers.ShareData;
 import com.leo.qrscanner.workers.ShowDataFormat;
 import com.leo.qrscanner.workers.checkModule;
 
@@ -201,17 +200,11 @@ public class MainActivity extends AppCompatActivity {
         if (barcode == null) {
             return;
         }
-        String text = "";
-        String btnText;
-
+        ShowDataFormat sd = new ShowDataFormat();
         Intent i = new Intent(MainActivity.this, showData.class);
-        Bundle b = new Bundle();
+        i.putStringArrayListExtra("styled", sd.styledString(barcode));
+        i.putStringArrayListExtra("styledRaw", sd.styledRawString(barcode));
 
-        ShareData sd = new ShareData(barcode);
-        ShowDataFormat sdf = new ShowDataFormat();
-        sdf.styledString(barcode);
-        b.putParcelable("key", sd);
-        i.putExtra("barcode", b);
         startActivity(i);
 
 
