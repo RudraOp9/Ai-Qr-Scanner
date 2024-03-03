@@ -165,19 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
     } // on create ends
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-    }
 
     public void copy(View v) {
         String text = textView.getText().toString().trim();
@@ -204,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(MainActivity.this, showData.class);
         i.putStringArrayListExtra("styled", sd.styledString(barcode));
         i.putStringArrayListExtra("styledRaw", sd.styledRawString(barcode));
-
+        i.putExtra("type", barcode.getValueType());
         startActivity(i);
 
 

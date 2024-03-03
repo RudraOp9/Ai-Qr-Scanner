@@ -3,117 +3,132 @@ package com.leo.qrscanner.workers
 import com.google.mlkit.vision.barcode.common.Barcode
 
 
-class ShowDataFormat() {
+class ShowDataFormat {
 
     fun styledString(barcode: Barcode): ArrayList<String> {
-        var ss: ArrayList<String> = ArrayList()
+        val ss: ArrayList<String> = ArrayList()
         when (barcode.valueType) {
             Barcode.TYPE_EMAIL -> {
-                ss += "**E-Mail Information:**\n"
-                ss += "Type: " + (barcode.email?.type ?: "Email") + "\n"
-                ss += "Address: " + (barcode.email?.address) + "\n"
-                ss += "Subject: " + (barcode.email?.subject ?: "Empty Subject") + "\n"
-                ss += "Body: " + (barcode.email?.body ?: "Empty body") + "\n"
+                ss += "**E-Mail Information:**"
+                ss += "Type: " + (barcode.email?.type ?: "Email") + ""
+                ss += "Address: " + (barcode.email?.address) + ""
+                ss += "Subject: " + (barcode.email?.subject ?: "Empty Subject") + ""
+                ss += "Body: " + (barcode.email?.body ?: "Empty body") + ""
+                ss += "Send Email"
             }
 
             Barcode.TYPE_PHONE -> {
-                ss += "**Phone Number :**\n"
+                ss += "**Phone Number :**"
                 val phone = barcode.phone
-                ss += "Number: " + (phone?.number ?: "Empty") + "\n"
-                ss += "Type: " + (phone?.type ?: "Empty") + "\n"
+                ss += "Number: " + (phone?.number ?: "Empty") + ""
+                ss += "Type: " + (phone?.type ?: "Empty") + ""
+                ss += "Call"
             }
 
             Barcode.TYPE_WIFI -> {
-                ss += "**Wi-Fi Information:**\n"
+                ss += "**Wi-Fi Information:**"
                 val wifi = barcode.wifi
-                ss += "SSID: " + (wifi?.ssid ?: "Empty") + "\n"
-                ss += "Password: " + (wifi?.password ?: "Empty") + "\n"
+                ss += "SSID: " + (wifi?.ssid ?: "Empty") + ""
+                ss += "Password: " + (wifi?.password ?: "Empty") + ""
                 ss += "Encryption Type: " + (wifi?.encryptionType ?: " ")
+                ss += "Setup Wifi"
             }
 
             Barcode.TYPE_URL -> {
-                ss += "**URL:**\n"
-                ss += "Link: " + barcode.url
+                ss += ("**URL:**")
+                ss += ("Link: " + (barcode.url?.url ?: ""))
+                ss += "Open in Browser"
             }
 
             Barcode.TYPE_CONTACT_INFO -> {
-                ss += "**Contact Information:**\n"
+                ss += "**Contact Information:**"
                 val contactInfo = barcode.contactInfo
 
-                ss += "Name: " + (contactInfo?.name ?: " ") + "\n"
-                ss += "Email: " + (contactInfo?.emails ?: " ") + "\n"
-                ss += "Phone: " + (contactInfo?.phones ?: " ") + "\n"
+                ss += "Name: " + (contactInfo?.name ?: " ") + ""
+                ss += "Email: " + (contactInfo?.emails ?: " ") + ""
+                ss += "Phone: " + (contactInfo?.phones ?: " ") + ""
                 ss += "Address: " + (contactInfo?.addresses ?: " ")
                 ss += "Organization: " + (contactInfo?.organization ?: " ")
                 ss += "Title: " + (contactInfo?.title ?: " ")
                 ss += "Urls: " + (contactInfo?.urls ?: " ")
+                ss += "Save contact"
             }
 
             Barcode.TYPE_CALENDAR_EVENT -> {
-                ss += "**Calendar Event:**\n"
+                ss += "**Calendar Event:**"
                 val calEve = barcode.calendarEvent
 
-                ss += "Start time : " + (calEve?.start ?: " ") + "\n"
-                ss += "End Time: " + (calEve?.end ?: " ") + "\n"
-                ss += "Location : " + (calEve?.location ?: " ") + "\n"
-                ss += "Status : " + (calEve?.status ?: " ") + "\n"
-                ss += "Description: " + (calEve?.description ?: " ") + "\n"
-                ss += "Organized By: " + (calEve?.organizer ?: " ") + "\n"
-                ss += "Summary : " + (calEve?.summary ?: " ") + "\n"
+                ss += "Start time : " + (calEve?.start ?: " ") + ""
+                ss += "End Time: " + (calEve?.end ?: " ") + ""
+                ss += "Location : " + (calEve?.location ?: " ") + ""
+                ss += "Status : " + (calEve?.status ?: " ") + ""
+                ss += "Description: " + (calEve?.description ?: " ") + ""
+                ss += "Organized By: " + (calEve?.organizer ?: " ") + ""
+                ss += "Summary : " + (calEve?.summary ?: " ") + ""
+                ss += "Add Event"
 
             }
 
             Barcode.TYPE_GEO -> {
-                ss += "**Geo Point:**\n"
+                ss += "** Location: **"
                 val geoPoint = barcode.geoPoint
-                ss += "Latitude: " + (geoPoint?.lat ?: " ") + "\n"
+                ss += "Latitude: " + (geoPoint?.lat ?: " ") + ""
                 ss += "Longitude: " + (geoPoint?.lng ?: " ")
+                ss += "Open Map"
             }
 
             Barcode.TYPE_DRIVER_LICENSE -> {
-                ss += "**Driver License:**\n"
+                ss += "**Driver License:**"
                 val driverLicense = barcode.driverLicense
 
                 ss += "Name: " + (driverLicense?.firstName ?: " ") +
                         " " + (driverLicense?.middleName ?: " ") +
-                        " " + (driverLicense?.lastName ?: " ") + "\n"
+                        " " + (driverLicense?.lastName ?: " ") + ""
                 ss += "Address: " + (driverLicense?.addressStreet ?: " ") + " " +
                         (driverLicense?.addressCity ?: " ") + " " +
                         (driverLicense?.addressState ?: " ") + " " +
-                        (driverLicense?.addressZip ?: " ") + "\n"
-                ss += "License Number: " + (driverLicense?.licenseNumber ?: " ") + "\n"
-                ss += "Issued Date: " + (driverLicense?.issueDate ?: " ") + "\n"
+                        (driverLicense?.addressZip ?: " ") + ""
+                ss += "License Number: " + (driverLicense?.licenseNumber ?: " ") + ""
+                ss += "Issued Date: " + (driverLicense?.issueDate ?: " ") + ""
                 ss += "Expiration Date: " + (driverLicense?.expiryDate ?: " ")
+
+                ss += "Take ScreenShot"
 
             }
 
             Barcode.TYPE_SMS -> {
-                ss += "**SMS Message:**\n"
+                ss += "**SMS Message:**"
                 val sms = barcode.sms
 
-                ss += "Message: " + (sms?.message ?: " ") + "\n"
+                ss += "Message: " + (sms?.message ?: " ") + ""
                 ss += "Phone Number: " + (sms?.phoneNumber ?: " ")
+
+                ss += "Call phone"
 
             }
 
             Barcode.TYPE_ISBN -> {
                 ss += "**ISBN:**\n"
                 ss += barcode.rawValue.toString()
+                ss += "Open in browser"
             }
 
             Barcode.TYPE_PRODUCT -> {
                 ss += "**Product Information:**\n"
                 ss += barcode.rawValue.toString()
+                ss += "Open in browser"
             }
 
             Barcode.TYPE_TEXT -> {
                 ss += "**Plain Text:**\n"
                 ss += barcode.rawValue.toString()
+                ss += "Copy"
             }
 
             else -> {
                 ss += "**Unknown Barcode :**\n"
                 ss += barcode.rawValue.toString()
+                ss += "Rate us"
             }
         }
         return ss
