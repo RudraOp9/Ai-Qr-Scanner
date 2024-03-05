@@ -90,19 +90,15 @@ class ShowDataFormat {
                         calEve.start?.minutes ?: calIns.get(Calendar.MINUTE)
                     )
 
+
                     endTime.set(
                         calEve.start?.year ?: Calendar.getInstance().get(Calendar.YEAR),
                         calEve.start?.month ?: Calendar.getInstance().get(Calendar.MONTH),
                         calEve.start?.day ?: Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
                     )
 
-
-                    ss.add(beginTime.time.toString())
-                    ss.add(endTime.time.toString())
-
-
-                    ss += "Start time : " + (calEve.start?.rawValue ?: " ") + ""
-                    ss += "End Time: " + (calEve.end?.rawValue ?: " ") + ""
+                    ss += "Start time : " + (beginTime.time.toString()) + ""
+                    ss += "End Time: " + (endTime.time.toString()) + ""
                     ss += "Location : " + (calEve.location ?: " ") + ""
                     ss += "Status : " + (calEve.status ?: " ") + ""
                     ss += "Description: " + (calEve.description ?: " ") + ""
@@ -137,7 +133,7 @@ class ShowDataFormat {
                 ss += "Issued Date: " + (driverLicense?.issueDate ?: " ") + ""
                 ss += "Expiration Date: " + (driverLicense?.expiryDate ?: " ")
 
-                ss += "Take ScreenShot"
+                ss += "Donate"
 
             }
 
