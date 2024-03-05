@@ -1,18 +1,35 @@
 package com.leo.qrscanner
 
+import android.app.SearchManager
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.CalendarContract
+import android.provider.CalendarContract.Events
+import android.provider.ContactsContract
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.mlkit.vision.barcode.common.Barcode
+import com.leo.qrscanner.workers.Helpers.makeSnack
 import com.leo.qrscanner.workers.Helpers.makeToast
 import com.leo.qrscanner.workers.recycler.ShowDataAdapter
+import java.util.Calendar
+
 
 class showData : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var btnPrimary: MaterialButton
+    lateinit var shareRaw: MaterialButton
+    lateinit var viewRaw: MaterialButton
+    lateinit var styledString: ArrayList<String>
+    lateinit var styledRawString: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +38,8 @@ class showData : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recyclerView)
         btnPrimary = findViewById(R.id.btnPrimary)
+        shareRaw = findViewById(R.id.shareRaw)
+        viewRaw = findViewById(R.id.viewRaw)
 
 
         // ShareData sd = new ShareData();
@@ -30,8 +49,8 @@ class showData : AppCompatActivity() {
 
         val type = intent.getIntExtra("type", 0)
 
-        val styledRawString = intent.getStringArrayListExtra("styledRaw") as ArrayList<String>
-        val styledString = intent.getStringArrayListExtra("styled") as ArrayList<String>
+        styledRawString = intent.getStringArrayListExtra("styledRaw") as ArrayList<String>
+        styledString = intent.getStringArrayListExtra("styled") as ArrayList<String>
 
         btnPrimary.text = styledString[styledString.size - 1]
         styledString.removeAt(styledString.size - 1)
@@ -40,8 +59,19 @@ class showData : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         btnPrimary.setOnClickListener {
-            buttonAction(type)
+            buttonAction(type, it)
             makeToast(this, "check")
+        }
+
+        shareRaw.setOnClickListener {
+            val intent: Intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_TEXT, getIntent().getStringExtra("raw"))
+            startActivity(Intent.createChooser(intent, "share to"))
+
+        }
+        viewRaw.setOnClickListener {
+
         }
 
 
@@ -52,58 +82,163 @@ class showData : AppCompatActivity() {
          })*/
     }
 
-    private fun buttonAction(btnType: Int) {
+
+    private fun buttonAction(btnType: Int, view: View) {
+        val i: Intent
         when (btnType) {
             Barcode.TYPE_EMAIL -> {
-                btnPrimary.text = "Send Email"
+                i = Intent(Intent.ACTION_MAIN)
+                i.type = Intent.CATEGORY_APP_EMAIL
+                i.putExtra(Intent.EXTRA_EMAIL, styledString[2])
+                i.putExtra(Intent.EXTRA_SUBJECT, styledString[3])
+                i.putExtra(Intent.EXTRA_TEXT, styledString[4])
             }
 
-            Barcode.TYPE_PHONE -> {
-                btnPrimary.text = "Send Email"
-            }
+
 
             Barcode.TYPE_WIFI -> {
-                btnPrimary.text = "Send Email"
+                // var wifiSugg =
+                //  WifiNetworkSuggestion.Builder().setSsid(styledString[2])
+                val ad = AlertDialog.Builder(this@showData)
+                    .setTitle("Add Wifi")
+                    .setMessage(
+                        "Network : ${styledRawString[1]}\n" +
+                                "Security:  ${styledRawString[3]} \n" +
+                                "Password : ${styledRawString[2]}\n\n" +
+                                "Please add this network manually in your WiFi settings."
+                    )
+                    .setCancelable(true)
+                    .setPositiveButton("Add Wifi") { dialog: DialogInterface, _: Int ->
+                        startActivity(Intent(android.provider.Settings.ACTION_WIFI_SETTINGS))
+
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Cancel") { dialog: DialogInterface, _: Int ->
+                        dialog.dismiss()
+                    }
+
+                ad.create().show()
             }
 
             Barcode.TYPE_URL -> {
-                btnPrimary.text = "Send Email"
+                if (styledRawString[1].startsWith("http") || styledRawString[1].startsWith("https")) {
+                    // Open as URL
+                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(styledRawString[1]))
+                    startActivity(browserIntent)
+                } else {
+                    // Open as search
+                    val searchIntent = Intent(Intent.ACTION_WEB_SEARCH)
+                    searchIntent.putExtra(SearchManager.QUERY, styledRawString[1])
+                    startActivity(searchIntent)
+                }
+
             }
 
             Barcode.TYPE_CONTACT_INFO -> {
-                btnPrimary.text = "Send Email"
+                val intent = Intent(ContactsContract.Intents.Insert.ACTION)
+                intent.type = (ContactsContract.RawContacts.CONTENT_TYPE)
+                intent.putExtra(ContactsContract.Intents.Insert.NAME, styledRawString[1])
+                intent.putExtra(ContactsContract.Intents.Insert.EMAIL, styledRawString[2])
+                intent.putExtra(ContactsContract.Intents.Insert.PHONE, styledRawString[3])
+                intent.putExtra(ContactsContract.Intents.Insert.POSTAL, styledRawString[4])
+                intent.putExtra(ContactsContract.Intents.Insert.COMPANY, styledRawString[5])
+                intent.putExtra(ContactsContract.Intents.Insert.DATA, styledRawString[7])
+                startActivity(intent)
+
             }
 
             Barcode.TYPE_CALENDAR_EVENT -> {
-                btnPrimary.text = "Send Email"
+                //val intent = Intent(Intent.ACTION_VIEW)
+                val beginTime = Calendar.getInstance()
+                val endTime = Calendar.getInstance()
+                beginTime.timeInMillis = styledRawString[1].toLong()
+                endTime.timeInMillis = styledRawString[2].toLong()
+
+                // beginTime[2012, 0, 19, 7 30
+
+
+                val intent: Intent = Intent(Intent.ACTION_INSERT)
+                    .setData(Events.CONTENT_URI)
+                    .putExtra(
+                        CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.timeInMillis
+                    )
+                    .putExtra(
+                        CalendarContract.EXTRA_EVENT_END_TIME, endTime.timeInMillis
+                    )
+                    .putExtra(Events.TITLE, "")
+                    .putExtra(Events.DESCRIPTION, "Group class")
+                    .putExtra(Events.EVENT_LOCATION, styledRawString[3])
+                    .putExtra(Events.STATUS, styledRawString[4])
+                    .putExtra(Events.DESCRIPTION, styledRawString[5])
+                    .putExtra(Events.ORGANIZER, styledRawString[6])
+
+
+                //.putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
+                startActivity(intent)
+// You can add additional extras like guests, reminders, etc.
+
+
             }
 
             Barcode.TYPE_GEO -> {
-                btnPrimary.text = "Send Email"
+                val mapIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?q=" + styledRawString[1] + "," + styledRawString[2])
+                )
+                startActivity(mapIntent)
             }
 
             Barcode.TYPE_DRIVER_LICENSE -> {
-                btnPrimary.text = "Send Email"
+                makeSnack(view, 3000, "coming soooon")
             }
 
             Barcode.TYPE_SMS -> {
-                btnPrimary.text = "Send Email"
+
+                val i1 = Intent(Intent.ACTION_DIAL, "tel:${styledRawString[2]}".toUri())
+
+                //  i.putExtra("tel:",styledRawString[2])
+                startActivity(i1)
+
+                /*   i = Intent(Intent.CATEGORY_APP_MAPS)
+                   i.type = Intent.
+                   i.putExtra(Intent.EXTRA_PHONE_NUMBER,styledRawString[2])
+                   i.putExtra(Intent.EXTRA_TEXT,styledRawString[1])
+                   Intent.createChooser(i , "open in")
+                   startActivity(i)*/
+
+            }
+
+            Barcode.TYPE_PHONE -> {
+
+                val i1 = Intent(Intent.ACTION_DIAL, "tel:${styledRawString[1]}".toUri())
+                startActivity(i1)
+
+                /* i = Intent(Intent.ACTION_MAIN)
+                 i.type = Intent.EXTRA_PHONE_NUMBER
+                 i.putExtra(Intent.EXTRA_PHONE_NUMBER,styledRawString[1])*/
             }
 
             Barcode.TYPE_ISBN -> {
-                btnPrimary.text = "Send Email"
+                val searchIntent = Intent(Intent.ACTION_WEB_SEARCH)
+                searchIntent.putExtra(SearchManager.QUERY, styledRawString[1])
+                startActivity(searchIntent)
             }
 
             Barcode.TYPE_PRODUCT -> {
-                btnPrimary.text = "Send Email"
+                val searchIntent = Intent(Intent.ACTION_WEB_SEARCH)
+                searchIntent.putExtra(SearchManager.QUERY, styledRawString[1])
+                startActivity(searchIntent)
             }
 
             Barcode.TYPE_TEXT -> {
-                btnPrimary.text = "Send Email"
+                val searchIntent = Intent(Intent.ACTION_WEB_SEARCH)
+                searchIntent.putExtra(SearchManager.QUERY, styledRawString[1])
+                startActivity(searchIntent)
             }
 
             else -> {
                 btnPrimary.text = "Send Email"
+                TODO() // FIXME: before url
             }
         }
     }

@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.leo.qrscanner.R
 import com.leo.qrscanner.workers.recycler.ShowDataAdapter.myholder
@@ -28,7 +28,7 @@ class ShowDataAdapter(
         val currentItem: String = items[position]
 
         val styleData: TextView = holder.itemView.findViewById(R.id.appCompatTextView)
-        val styleDataCopy: AppCompatImageButton = holder.itemView.findViewById(R.id.materialButton)
+        val styleDataCopy: MaterialButton = holder.itemView.findViewById(R.id.materialButton1)
 
         styleData.text = currentItem
         styleDataCopy.setOnClickListener {

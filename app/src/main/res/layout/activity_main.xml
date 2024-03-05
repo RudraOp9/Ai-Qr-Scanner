@@ -8,52 +8,37 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginTop="72dp"
             android:layout_marginEnd="50dp"
-
-            android:backgroundTint="#FCF7F4"
-            android:padding="10dp"
             app:cardCornerRadius="10dp"
-            app:cardElevation="46dp"
+            app:cardElevation="30dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/scanCamera"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:backgroundTint="#75CCC7C7"
+                android:padding="20dp"
+                android:text="Scan using Camera"
+                android:textColor="@color/black"
+                app:cornerRadius="10dp" />
 
-                <ImageView
-                    android:layout_width="136dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:background="#FCF7F4"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/scanme" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/scanCamera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|end"
-                    android:background="@drawable/button"
-                    android:padding="10dp"
-                    android:text="scan using camera" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
 
 
@@ -64,56 +49,28 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="50dp"
             android:layout_marginEnd="50dp"
-            android:backgroundTint="#FCF7F4"
             app:cardCornerRadius="10dp"
-            app:cardElevation="50dp"
+            app:cardElevation="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-
-                <ImageView
-                    android:layout_width="136dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="start"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/scann" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/scanGallery"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|end"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/button"
-                    android:padding="5dp"
-                    android:text="Scan from gallery"
-                    android:textColor="@color/black" />
-
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/scanGallery"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:backgroundTint="#75CCC7C7"
+                android:padding="20dp"
+                android:text="Scan using Gallery"
+                android:textColor="@color/black"
+                app:cornerRadius="10dp" />
 
 
         </androidx.cardview.widget.CardView>
 
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:hint="result will be shown here"
-            android:onClick="copy"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView2" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,15 +1,9 @@
 package com.leo.qrscanner;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,6 +11,7 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
@@ -45,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     GmsBarcodeScanner scanner;
     BarcodeScanner scanner2 = BarcodeScanning.getClient();
     checkModule checkModule = new checkModule();
-    Button cameraScan, galleryScan;
-    TextView textView;
+    MaterialButton cameraScan, galleryScan;
+
     ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 
     String rawValue = "";
@@ -63,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         cameraScan = findViewById(R.id.scanCamera);
         galleryScan = findViewById(R.id.scanGallery);
-        textView = findViewById(R.id.textView);
+
 
         pickMedia =
                 registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
@@ -111,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                             String rawValue = barcode.getRawValue();
                             checkType(barcode);
                             Toast.makeText(this, rawValue, Toast.LENGTH_SHORT).show();
-                            textView.setText(rawValue);
+
                         })
                 .addOnCanceledListener(
                         () -> {
@@ -148,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                             Point[] corners = barcode.getCornerPoints();
                             */
                                 rawValue += barcode.getRawValue() + "\n \n";
-                                textView.setText(rawValue);
+
                                 checkType(barcode);
                             }
                         }
@@ -165,14 +160,6 @@ public class MainActivity extends AppCompatActivity {
 
     } // on create ends
 
-
-
-    public void copy(View v) {
-        String text = textView.getText().toString().trim();
-        ClipboardManager clipboard = (ClipboardManager) MainActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Copied Text", text);
-        clipboard.setPrimaryClip(clip);
-    }
 
     public void showData(String text2, String buttonText2, int dataType) {
         Intent i = new Intent(MainActivity.this, showData.class);
@@ -193,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
         i.putStringArrayListExtra("styled", sd.styledString(barcode));
         i.putStringArrayListExtra("styledRaw", sd.styledRawString(barcode));
         i.putExtra("type", barcode.getValueType());
+        i.putExtra("raw", barcode.getRawValue());
         startActivity(i);
 
 

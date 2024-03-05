@@ -1,6 +1,7 @@
 package com.leo.qrscanner.workers
 
 import com.google.mlkit.vision.barcode.common.Barcode
+import java.util.Calendar
 
 
 class ShowDataFormat {
@@ -10,7 +11,6 @@ class ShowDataFormat {
         when (barcode.valueType) {
             Barcode.TYPE_EMAIL -> {
                 ss += "**E-Mail Information:**"
-                ss += "Type: " + (barcode.email?.type ?: "Email") + ""
                 ss += "Address: " + (barcode.email?.address) + ""
                 ss += "Subject: " + (barcode.email?.subject ?: "Empty Subject") + ""
                 ss += "Body: " + (barcode.email?.body ?: "Empty body") + ""
@@ -21,7 +21,6 @@ class ShowDataFormat {
                 ss += "**Phone Number :**"
                 val phone = barcode.phone
                 ss += "Number: " + (phone?.number ?: "Empty") + ""
-                ss += "Type: " + (phone?.type ?: "Empty") + ""
                 ss += "Call"
             }
 
@@ -42,30 +41,76 @@ class ShowDataFormat {
 
             Barcode.TYPE_CONTACT_INFO -> {
                 ss += "**Contact Information:**"
-                val contactInfo = barcode.contactInfo
 
-                ss += "Name: " + (contactInfo?.name ?: " ") + ""
-                ss += "Email: " + (contactInfo?.emails ?: " ") + ""
-                ss += "Phone: " + (contactInfo?.phones ?: " ") + ""
-                ss += "Address: " + (contactInfo?.addresses ?: " ")
-                ss += "Organization: " + (contactInfo?.organization ?: " ")
-                ss += "Title: " + (contactInfo?.title ?: " ")
-                ss += "Urls: " + (contactInfo?.urls ?: " ")
-                ss += "Save contact"
+                val contactInfo = barcode.contactInfo
+                if (contactInfo != null) {
+
+                    var extra: String = ""
+                    ss += "Name: " + (contactInfo.name?.formattedName ?: " ") + ""
+
+                    for (x in contactInfo.emails) extra += "${x.address} ,"
+                    ss.add("Emails: $extra ")
+
+                    extra = ""
+                    for (x in contactInfo.phones) extra += "${x.number} ,"
+                    ss.add("Phone: $extra")
+
+                    extra = ""
+                    for (x in contactInfo.addresses) extra += "${x.addressLines} ,"
+                    ss.add("Address: $extra")
+
+                    ss += "Organization: " + (contactInfo.organization ?: " ")
+                    ss += "Title: " + (contactInfo.title ?: " ")
+
+                    extra = ""
+                    for (x in contactInfo.urls) extra += "${x} ,"
+                    ss.add(extra)
+
+                    ss += "Save contact"
+
+                }
             }
 
             Barcode.TYPE_CALENDAR_EVENT -> {
                 ss += "**Calendar Event:**"
                 val calEve = barcode.calendarEvent
 
-                ss += "Start time : " + (calEve?.start ?: " ") + ""
-                ss += "End Time: " + (calEve?.end ?: " ") + ""
-                ss += "Location : " + (calEve?.location ?: " ") + ""
-                ss += "Status : " + (calEve?.status ?: " ") + ""
-                ss += "Description: " + (calEve?.description ?: " ") + ""
-                ss += "Organized By: " + (calEve?.organizer ?: " ") + ""
-                ss += "Summary : " + (calEve?.summary ?: " ") + ""
-                ss += "Add Event"
+
+                val beginTime = Calendar.getInstance()
+                val endTime = Calendar.getInstance()
+                if (calEve != null) {
+
+                    val calIns = Calendar.getInstance()
+
+                    beginTime.set(
+                        calEve.start?.year ?: calIns.get(Calendar.YEAR),
+                        calEve.start?.month ?: calIns.get(Calendar.MONTH),
+                        calEve.start?.day ?: calIns.get(Calendar.DAY_OF_MONTH),
+                        calEve.start?.hours ?: calIns.get(Calendar.HOUR_OF_DAY),
+                        calEve.start?.minutes ?: calIns.get(Calendar.MINUTE)
+                    )
+
+                    endTime.set(
+                        calEve.start?.year ?: Calendar.getInstance().get(Calendar.YEAR),
+                        calEve.start?.month ?: Calendar.getInstance().get(Calendar.MONTH),
+                        calEve.start?.day ?: Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                    )
+
+
+                    ss.add(beginTime.time.toString())
+                    ss.add(endTime.time.toString())
+
+
+                    ss += "Start time : " + (calEve.start?.rawValue ?: " ") + ""
+                    ss += "End Time: " + (calEve.end?.rawValue ?: " ") + ""
+                    ss += "Location : " + (calEve.location ?: " ") + ""
+                    ss += "Status : " + (calEve.status ?: " ") + ""
+                    ss += "Description: " + (calEve.description ?: " ") + ""
+                    ss += "Organized By: " + (calEve.organizer ?: " ") + ""
+                    ss += "Summary : " + (calEve.summary ?: " ") + ""
+                    ss += "Add Event"
+                }
+
 
             }
 
@@ -126,6 +171,11 @@ class ShowDataFormat {
             }
 
             else -> {
+                if (barcode.rawValue.toString().startsWith("upi", true)) {
+                    ss += "**Plain Text:**"
+                    //TODO
+                }
+
                 ss += "**Unknown Barcode :**\n"
                 ss += barcode.rawValue.toString()
                 ss += "Rate us"
@@ -140,7 +190,6 @@ class ShowDataFormat {
             Barcode.TYPE_EMAIL -> {
 
                 ss.add("**E-Mail Information:**")
-                ss.add((barcode.email?.type ?: "").toString())
                 ss.add(barcode.email?.address ?: "")
                 ss.add(barcode.email?.subject ?: "")
                 ss.add(barcode.email?.body ?: "")
@@ -150,7 +199,6 @@ class ShowDataFormat {
                 ss.add("**Phone Number :**")
                 val phone = barcode.phone
                 ss.add((phone?.number ?: "Empty"))
-                ss.add(((phone?.type ?: "Empty").toString()))
             }
 
             Barcode.TYPE_WIFI -> {
@@ -158,44 +206,84 @@ class ShowDataFormat {
                 val wifi = barcode.wifi
                 ss.add((wifi?.ssid ?: ""))
                 ss.add((wifi?.password ?: ""))
-                ss.add(((wifi?.encryptionType ?: " ").toString()))
+                if (wifi != null) {
+                    when (wifi.encryptionType) {
+                        1 -> ss.add("TYPE_OPEN")
+                        2 -> ss.add("TYPE_WPA")
+                        3 -> ss.add("TYPE_WEP")
+                        else -> ss.add("NOT_DEFINED")
+                    }
+                }
+
             }
 
             Barcode.TYPE_URL -> {
                 ss.add("**URL:**")
-                ss.add(barcode.url.toString())
+                ss.add(barcode.url?.url.toString())
+
             }
 
             Barcode.TYPE_CONTACT_INFO -> {
-                ss.add("**Contact Information:**")
+                ss.add("**Contact Information:**") //0
                 val contactInfo = barcode.contactInfo
+                if (contactInfo != null) {
+                    var extra: String = ""
+                    ss.add(((contactInfo.name?.formattedName ?: " ")))
+                    for (x in contactInfo.emails) extra += "${x.address} ,"
+                    ss.add(extra)
+                    extra = ""
+                    for (x in contactInfo.phones) extra += "${x.number} ,"
+                    ss.add(extra)
+                    extra = ""
+                    for (x in contactInfo.addresses) extra += "${x.addressLines} ,"
+                    ss.add(extra)
+                    ss.add((contactInfo.organization ?: " "))
+                    ss.add((contactInfo.title ?: " "))
+                    extra = ""
+                    for (x in contactInfo.urls) extra += "${x} ,"
+                    ss.add(extra)
+                }
 
-                ss.add(((contactInfo?.name ?: " ").toString()))
-                ss.add(((contactInfo?.emails ?: " ").toString()))
-                ss.add(((contactInfo?.phones ?: " ").toString()))
-                ss.add(((contactInfo?.addresses ?: " ").toString()))
-                ss.add((contactInfo?.organization ?: " "))
-                ss.add((contactInfo?.title ?: " "))
-                ss.add(((contactInfo?.urls ?: "").toString()))
+
             }
 
             Barcode.TYPE_CALENDAR_EVENT -> {
                 ss.add("**Calendar Event:**")
                 val calEve = barcode.calendarEvent
+                val beginTime = Calendar.getInstance()
+                val endTime = Calendar.getInstance()
+                if (calEve != null) {
 
-                ss.add(((calEve?.start ?: " ").toString()))
-                ss.add(((calEve?.end ?: " ").toString()))
-                ss.add((calEve?.location ?: " "))
-                ss.add((calEve?.status ?: " "))
-                ss.add((calEve?.description ?: " "))
-                ss.add((calEve?.organizer ?: " "))
-                ss.add((calEve?.summary ?: " "))
+                    val calIns = Calendar.getInstance()
 
+                    beginTime.set(
+                        calEve.start?.year ?: calIns.get(Calendar.YEAR),
+                        calEve.start?.month ?: calIns.get(Calendar.MONTH),
+                        calEve.start?.day ?: calIns.get(Calendar.DAY_OF_MONTH)
+                    )
+
+                    endTime.set(
+                        calEve.start?.year ?: Calendar.getInstance().get(Calendar.YEAR),
+                        calEve.start?.month ?: Calendar.getInstance().get(Calendar.MONTH),
+                        calEve.start?.day ?: Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                    )
+
+
+                    ss.add(beginTime.timeInMillis.toString())
+                    ss.add(endTime.timeInMillis.toString())
+                    ss.add((calEve.location ?: " "))
+                    ss.add((calEve.status ?: " "))
+                    ss.add((calEve.description ?: " "))
+                    ss.add((calEve.organizer ?: " "))
+                    ss.add((calEve.summary ?: " "))
+
+                }
             }
 
             Barcode.TYPE_GEO -> {
                 ss.add("**Geo Point:**")
                 val geoPoint = barcode.geoPoint
+
                 ss.add(((geoPoint?.lat ?: " ").toString()))
                 ss.add(((geoPoint?.lng ?: " ").toString()))
             }

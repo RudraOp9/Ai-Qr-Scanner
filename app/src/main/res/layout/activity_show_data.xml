@@ -27,6 +27,40 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/shareRaw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#75CCC7C7"
+            android:text="share"
+            android:textColor="@color/black"
+            app:cornerRadius="10dp"
+            app:icon="@drawable/icon_share_24"
+            app:iconGravity="start"
+            app:iconSize="24dp"
+            app:iconTint="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/viewRaw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#75CCC7C7"
+            android:text="Raw"
+            android:textColor="@color/black"
+            app:cornerRadius="10dp"
+            app:icon="@drawable/icon_data_object_24"
+            app:iconGravity="start"
+            app:iconSize="24dp"
+            app:iconTint="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/shareRaw"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -36,20 +70,19 @@
             android:layout_margin="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintTop_toBottomOf="@+id/shareRaw" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:backgroundTint="#E9DCFE"
-            android:elevation="5dp"
+            android:backgroundTint="#75CCC7C7"
             android:text="Primary action button"
             android:padding="15dp"
             android:textSize="15sp"
             android:textColor="@color/black"
-            app:cornerRadius="20dp"
+            app:cornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

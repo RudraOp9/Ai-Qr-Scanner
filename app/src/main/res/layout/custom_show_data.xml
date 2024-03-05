@@ -9,23 +9,37 @@
         android:id="@+id/appCompatTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Empty"
+        android:layout_marginEnd="10dp"
         android:singleLine="true"
+        android:text="Empty"
+
 
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/materialButton"
+        app:layout_constraintEnd_toStartOf="@+id/materialButton1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <androidx.appcompat.widget.AppCompatImageButton
+    <!--<androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/materialButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#D54A4A4A"
         android:src="@drawable/icon_copy_all_24"
         android:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/materialButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00CCC7C7"
+        app:icon="@drawable/icon_copy_all_24"
+        app:iconSize="20dp"
+        app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
