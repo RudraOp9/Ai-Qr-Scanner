@@ -10,9 +10,11 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.leo.qrscanner.R
 import com.leo.qrscanner.workers.recycler.ShowDataAdapter.myholder
+
 
 class ShowDataAdapter(
     private val items: ArrayList<String>, val itemCopy: ArrayList<String>,
@@ -31,6 +33,9 @@ class ShowDataAdapter(
         val styleDataCopy: MaterialButton = holder.itemView.findViewById(R.id.materialButton1)
 
         styleData.text = currentItem
+        styleData.setOnClickListener {
+            val alertDialog = MaterialAlertDialogBuilder(context).setMessage(currentItem).show()
+        }
         styleDataCopy.setOnClickListener {
             Snackbar.make(it, "copied", 3000).show()
             context.copyToClipboard(itemCopy[position])

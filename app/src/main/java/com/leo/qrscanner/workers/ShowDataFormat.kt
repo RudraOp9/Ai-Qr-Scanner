@@ -10,22 +10,22 @@ class ShowDataFormat {
         val ss: ArrayList<String> = ArrayList()
         when (barcode.valueType) {
             Barcode.TYPE_EMAIL -> {
-                ss += "**E-Mail Information:**"
-                ss += "Address: " + (barcode.email?.address) + ""
-                ss += "Subject: " + (barcode.email?.subject ?: "Empty Subject") + ""
-                ss += "Body: " + (barcode.email?.body ?: "Empty body") + ""
+                ss += "**E-Mail Information:** \n "
+                ss += "Address: " + (barcode.email?.address) + "\n"
+                ss += "Subject: " + (barcode.email?.subject ?: "Empty Subject") + "\n"
+                ss += "Body: " + (barcode.email?.body ?: "Empty body") + "\n"
                 ss += "Send Email"
             }
 
             Barcode.TYPE_PHONE -> {
-                ss += "**Phone Number :**"
+                ss += "**Phone Number :**\n"
                 val phone = barcode.phone
-                ss += "Number: " + (phone?.number ?: "Empty") + ""
+                ss += "Number: " + (phone?.number ?: "Empty") + "\n"
                 ss += "Call"
             }
 
             Barcode.TYPE_WIFI -> {
-                ss += "**Wi-Fi Information:**"
+                ss += "**Wi-Fi Information:**\n"
                 val wifi = barcode.wifi
                 ss += "SSID: " + (wifi?.ssid ?: "Empty") + ""
                 ss += "Password: " + (wifi?.password ?: "Empty") + ""
@@ -34,7 +34,7 @@ class ShowDataFormat {
             }
 
             Barcode.TYPE_URL -> {
-                ss += ("**URL:**")
+                ss += ("**URL:**\n")
                 ss += ("Link: " + (barcode.url?.url ?: ""))
                 ss += "Open in Browser"
             }
@@ -215,7 +215,7 @@ class ShowDataFormat {
 
             Barcode.TYPE_URL -> {
                 ss.add("**URL:**")
-                ss.add(barcode.url?.url.toString())
+                barcode.url?.url?.let { ss.add(it) }
 
             }
 

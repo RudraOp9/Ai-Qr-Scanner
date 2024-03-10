@@ -15,6 +15,8 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textview.MaterialTextView
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.leo.qrscanner.workers.Helpers.makeSnack
 import com.leo.qrscanner.workers.Helpers.makeToast
@@ -26,10 +28,10 @@ class showData : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var btnPrimary: MaterialButton
-    lateinit var shareRaw: MaterialButton
-    lateinit var viewRaw: MaterialButton
-    lateinit var styledString: ArrayList<String>
-    lateinit var styledRawString: ArrayList<String>
+    private lateinit var shareRaw: MaterialButton
+    private lateinit var viewRaw: MaterialButton
+    private lateinit var styledString: ArrayList<String>
+    private lateinit var styledRawString: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,11 +68,23 @@ class showData : AppCompatActivity() {
         shareRaw.setOnClickListener {
             val intent: Intent = Intent(Intent.ACTION_SEND)
             intent.type = "text/plain"
-            intent.putExtra(Intent.EXTRA_TEXT, getIntent().getStringExtra("raw"))
+            var x: String = ""
+            styledString.onEach { x += (it) }
+            intent.putExtra(Intent.EXTRA_TEXT, x)
             startActivity(Intent.createChooser(intent, "share to"))
 
         }
         viewRaw.setOnClickListener {
+            val alertDialog: AlertDialog
+            alertDialog =
+                MaterialAlertDialogBuilder(this).setView(R.layout.custom_show_raw).create()
+
+            alertDialog.setCanceledOnTouchOutside(true)
+            alertDialog.show()
+            var showRaw: MaterialTextView? = alertDialog.findViewById(R.id.showRaw)
+            if (showRaw != null) {
+                showRaw.text = getIntent().getStringExtra("raw")
+            }
 
         }
 
